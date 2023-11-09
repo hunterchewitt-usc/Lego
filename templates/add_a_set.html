@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Helper</title>
+</head>
+<body>
+    <a href='/'>Home</a>
+    <form action="/submit_set" method="POST">
+        <label for="setnum">Enter Set Numbers Separated By Commas:</label><br>
+        <input pattern="[0-9,]*" style="width:80%" id="setnum" name="setnum" placeholder="1234,5678,9101112"><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

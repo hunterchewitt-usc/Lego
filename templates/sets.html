@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--/html/body/div[3]/center/table/tbody/tr/td/section/div/div/table[1]/tbody/tr[1]/td/font/span[2]-->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">    
+    <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Helper</title>
+
+    <style>
+        table, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding-right: 5px;
+            font-size:2vw            
+        }
+
+        tr {
+            font-size:1.3vw 
+        }
+                
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+
+        img {
+            max-height: 250px;
+            max-width: 250px;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+</head>
+<body>
+    <a href="/sets">My Sets</a>
+    <br>
+    <a href="/add_piece">Add A Piece</a>
+    <br>
+    <a href="/add_set">Add A Set</a>
+    <br>
+    <br>
+    <table class="sortable">
+        <tr>
+            <th>Count</th>
+            <th>Name</th>
+            <th>Set Number</th>
+            <th>Number Of Pieces</th>
+            <th>Number Of Pieces in Use</th>
+            <th>Percent Of Pieces in Use</th>
+            <th></th>
+        </tr>
+        {% for set in list_of_sets%}
+        <tr>
+            <td>
+                <b>{{loop.index}}</b>
+            </td>
+            <td id='name{{set["set_number"]}}'>
+                <a href='/set/{{set["set_number"]}}'>{{set["set_name"]}}</a>
+            </td>
+            <td>
+                {{set["set_number"]}}
+            </td>
+            <td>
+                {{set["num_pieces"]}}
+            </td>
+            <td>
+                {{set["num_pieces_in_use"]}}
+            </td>
+            <td>
+                {{set["percent_pieces_in_use"]}}%
+                <br>
+                <form action='/mark_set_complete/{{set["set_number"]}}' method="post">
+                    <button>Mark Set As Complete</button>
+                </form>
+                <form action='/mark_set_empty/{{set["set_number"]}}' method="post">
+                    <button>Mark Set As Empty</button>
+                </form>
+            </td>
+            <td>
+                <img src='https://img.bricklink.com/ItemImage/SN/0/{{set["set_number"]}}-1.png'>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

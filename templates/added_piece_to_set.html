@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>
+        {%if is_add %} 
+        Added
+        {% else %} 
+        Removed
+        {% endif %}
+        {{quantity}} of piece {{color}} {{piece_num}} to be in use for set <a href='/set/{{set_num}}'>{{set_num}}</a>. The set is now <b>{{pct_pieces}}%</b> complete</b>
+        <br>
+    </p>
+    <br>
+    <a href="/sets">My Sets</a>
+    <br>
+    <a href="/add_piece">Add A Piece</a>
+    <br>
+    <a href="/add_set">Add A Set</a>
+</body>
+</html>

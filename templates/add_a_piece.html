@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href='/'>Home</a>
+    {% if color %}
+    <p>
+        {%if is_add %} 
+        Added
+        {% else %} 
+        Removed
+        {% endif %}
+        {{quantity}} of piece {{color}} {{piece_num}} to be in use for set <a href='/set/{{set_num}}'>{{set_num}}</a>. The set is now <b>{{pct_pieces}}%</b> complete</b>
+    </p>
+    <form action="/submit_piece" method="POST">
+        <input type="hidden" id='piece_number' name="piecenum" value="{{piece_num}}">
+        <label for="color">Add Another of Same Piece</label><br>
+        <input type="hidden" id='color' name="color" value="{{color}}">
+        <input type="submit" value="Submit">
+    </form>
+    {% endif %}
+
+    <form action="/submit_piece" method="POST">
+        <label for="piecenum">Piece Reference Number:</label><br>
+        <input autofocus="autofocus" type="text" id="piecenum" name="piecenum" placeholder="4337"><br>
+        <label for="color">Color:</label><br>
+        <input type="text" id="color" name="color" placeholder="brown"><br><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

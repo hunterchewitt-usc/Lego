@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding-right: 5px;
+            font-size:2vw            
+        }
+
+        tr {
+            font-size:1.3vw 
+        }
+
+        img {
+            max-height: 50px;
+            max-width: 50px;
+        }
+                
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+    <a href='/'>Home</a>
+    <h1>Set {{set_number}}</h1>
+    <img style="max-width: 250px; max-height: 250px;" src='https://img.bricklink.com/ItemImage/SN/0/{{set_number}}-1.png'>
+    <h1>Percent Complete: {{percent}}%</h1>
+    <table class="sortable">
+        <tr>
+            <th>Piece Number</th>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th>Quantity In Use</th>
+            <th>Image</th>
+            <th></th>
+        </tr>
+        {% for piece in pieces.values() %}
+        <tr>
+            <td>{{piece[0]["piece_number"]}}</td>
+            <td>{{piece[0]["color"]}}</td>
+            <td>{{piece[1]}}</td>
+            <td>{{piece[2]}}</td>
+            <td>
+                <img src='https://img.bricklink.com/ItemImage/PN/11/{{piece[0]["piece_number"]}}.png'>
+            </td>
+            <td>
+                <form action="/submit_piece_to_set" method="POST">
+                    <label for="num_pieces">Number of Pieces to Add</label><br>
+                    <input pattern="[0-9]*" style="width:80%" id='num_pieces{{piece[0]["piece_number"]}}' name="num_pieces"  max="{{piece[1] - piece[2]}}" ><br>
+                    <input type="hidden" id='set_number{{set_number}}' name="set_number" value='{{set_number}}'>
+                    <input type="hidden" id='piece_number{{piece[0]["piece_number"]}}' name="piece_number" value='{{piece[0]["piece_number"]}}'>
+                    <input type="hidden" id='piece_color{{piece[0]["color"]}}' name="piece_color" value='{{piece[0]["color"]}}'>
+                    <input type="hidden" name="back_to_set" value = "true">
+                    <input type="submit" value="Submit">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

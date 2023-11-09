@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        table, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        th {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding-right: 5px;
+            font-size:2vw            
+        }
+
+        tr {
+            font-size:1.3vw 
+        }
+
+        img {
+            max-height: 250px;
+            max-width: 250px;
+        }
+                
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sets in Which {{color}} {{piece_num}} is required and not completely in use</h1>
+    {% if list_of_sets | length == 0 %}
+        <form action="/submit_piece" method="POST">
+            <label for="piecenum">Piece Reference Number:</label><br>
+            <input autofocus="autofocus" type="text" id="piecenum" name="piecenum" placeholder="4337"><br>
+            <label for="color">Color:</label><br>
+            <input  type="text" id="color" name="color" placeholder="brown"><br><br>
+            <input type="submit" value="Submit">
+        </form>
+        <p>Similar Pieces</p>
+        {% for piece in similar_pieces %}
+        {{piece}}<br>
+        {%endfor%}
+    {% elif color == "" %}
+        <form action="/submit_piece" method="POST">
+            <input type="hidden" id='piece_number' name="piecenum" value="{{piece_num}}">
+            <label for="color">Specify Color:</label><br>
+            <input autofocus="autofocus" type="text" id="color" name="color"><br><br>
+            <input type="submit" value="Submit">
+        </form>
+    {% endif %}
+    <a href="/sets">My Sets</a>
+    <br>
+    <a href="/add_piece">Add A Piece</a>
+    <br>
+    <a href="/add_set">Add A Set</a>
+    <br>
+    {%if color in brickLinkColorSet%}
+        <img src='https://img.bricklink.com/ItemImage/PN/{{brickLinkColorSet[color]}}/{{piece_num}}.png'>
+    {%else%}
+        <img src='https://img.bricklink.com/ItemImage/PN/10/{{piece_num}}.png'>
+    {%endif%}
+    <table class="sortable">
+        <tr>
+            <th>Count</th>
+            <th>Name</th>
+            <th>Set Number</th>
+            <th>Quantity of Piece</th>
+            <th>Quantity of Piece in Use</th>
+            <th>Total Number of Pieces</th>
+            <th>Total Number of Pieces in Use</th>
+            <th>Percent Complete</th>
+            <th> </th>
+            <th></th>
+            <th></th>
+        </tr>
+        {% for set in list_of_sets %}
+        <tr>
+            <td>
+                <b>{{loop.index}}</b>
+                {% if color == "" %}
+                    {%for color in set[3] %}
+                        {{color}}
+                        <br>
+                        <br>
+                        <br>
+                    {%endfor%}
+                {% endif %}
+            </td>
+            <td>
+               <a href='/set/{{set[1]["set_number"]}}'>{{set[1]["set_name"]}}</a> 
+            </td>
+            <td>
+                {{set[1]["set_number"]}}
+            </td>
+            <td>
+                {{set[0]}}
+            </td>
+            <td>
+                {{set[2]}}
+            </td>
+            <td>
+                {{set[1]["num_pieces"]}}
+            </td>
+            <td>
+                {{set[1]["num_pieces_in_use"]}}
+            </td>
+            <td>
+                {{set[1]["percent_pieces_in_use"]}}%
+            </td>
+            <td>
+                <img src='https://img.bricklink.com/ItemImage/SN/0/{{set[1]["set_number"]}}-1.png'>
+            </td>
+            <td>
+                <form action="/submit_piece_to_set" method="POST">
+                    <label for="num_pieces">Number of Pieces to Add</label><br>
+                    <input pattern="[0-9]*" style="width:80%" id='num_pieces{{set[1]["set_number"]}}' name="num_pieces" max="{{set[0]-set[2]}}}" ><br>
+                    <input type="hidden" id='set_number{{set[1]["set_number"]}}' name="set_number" value='{{set[1]["set_number"]}}'>
+                    <input type="hidden" id='piece_number{{set[1]["set_number"]}}' name="piece_number" value="{{piece_num}}">
+                    <input type="hidden" id='piece_color{{set[1]["set_number"]}}' name="piece_color" value="{{color}}">
+                    <input type="hidden" name="back_to_set" value = "false">
+                    <input type="submit" value="Submit">
+                </form>
+            </td>
+            <td>
+                <form action="/remove_piece_from_set" method="POST">
+                    <label for="num_pieces">Number of Pieces to Remove</label><br>
+                    <input pattern="[0-9]*" style="width:80%" id='rnum_pieces{{set[1]["set_number"]}}' name="num_pieces" max='{{set}}' ><br>
+                    <input type="hidden" id='rset_number{{set[1]["set_number"]}}' name="set_number" value='{{set[1]["set_number"]}}'>
+                    <input type="hidden" id='rpiece_number{{set[1]["set_number"]}}' name="piece_number" value="{{piece_num}}">
+                    <input type="hidden" id='rpiece_color{{set[1]["set_number"]}}' name="piece_color" value="{{color}}">
+                    <input type="submit" value="Submit">                    
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h1>Sets in Which {{color}} {{piece_num}} is required and is completely in use</h1>
+    <table class="sortable">
+        <tr>
+            <th>Count</th>
+            <th>Name</th>
+            <th>Set Number</th>
+            <th>Quantity</th>
+            <th>Total Number of Pieces</th>
+            <th>Total Number of Pieces in Use</th>
+            <th>Percent Complete</th>
+            <th>Image </th>
+            <th></th>
+        </tr>
+        {% for set in list_of_sets_in_use %}
+        <tr>
+            <td>
+                <b>{{loop.index}}</b>
+            </td>
+            <td>
+                <a href='/set/{{set[1]["set_number"]}}'>{{set[1]["set_name"]}}</a> 
+            </td>
+            <td>
+                {{set[1]["set_number"]}}
+            </td>
+            <td>
+                {{set[0]}}
+            </td>
+            <td>
+                {{set[1]["num_pieces"]}}
+            </td>
+            <td>
+                {{set[1]["num_pieces_in_use"]}}
+            </td>
+            <td>
+                {{set[1]["percent_pieces_in_use"]}}%
+            </td>
+            <td>
+                <img src='https://img.bricklink.com/ItemImage/SN/0/{{set[1]["set_number"]}}-1.png'>
+            </td>
+            <td>
+                <form action="/remove_piece_from_set" method="POST">
+                    <label for="num_pieces">Number of Pieces to Remove</label><br>
+                    <input pattern="[A-za-z0-9]*" style="width:80%" id='rnum_pieces{{set[1]["set_number"]}}' name="num_pieces" max='set[1]["num_pieces_in_use"]' ><br>
+                    <input type="hidden" id='urset_number{{set[1]["set_number"]}}' name="set_number" value='{{set[1]["set_number"]}}'>
+                    <input type="hidden" id='urpiece_number{{set[1]["set_number"]}}' name="piece_number" value="{{piece_num}}">
+                    <input type="hidden" id='urpiece_color{{set[1]["set_number"]}}' name="piece_color" value="{{color}}">
+                    <input type="submit" value="Submit">                    
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
